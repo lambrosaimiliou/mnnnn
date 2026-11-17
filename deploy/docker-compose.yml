@@ -1,0 +1,43 @@
+services:
+  database:
+    image: mysql:8.4
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-digitalbotsclients}
+      MYSQL_USER: ${DB_USER:?Set DB_USER in deploy/.env}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in deploy/.env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in deploy/.env}
+    volumes:
+      - digitalbots_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    # No public MySQL port. Connect via an SSH tunnel for HeidiSQL administration.
+
+  app:
+    build:
+      context: ..
+      dockerfile: apps/server/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 6767
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-digitalbotsclients}
+      COOKIE_SECURE: "true"
+      COOKIE_SAME_SITE: none
+      TRUST_PROXY: "true"
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:6767:6767"
+
+volumes:
+  digitalbots_mysql:

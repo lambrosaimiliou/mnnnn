@@ -1,0 +1,13 @@
+{
+  "name": "digitalbots-management-suite",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["apps/server", "apps/web", "apps/desktop"],
+  "scripts": {
+    "dev": "npm run dev --workspace @digitalbots/server",
+    "db:migrate": "npm run db:migrate --workspace @digitalbots/server",
+    "start": "npm run start --workspace @digitalbots/server",
+    "build:web": "npm run build --workspace @digitalbots/web",
+    "build:windows": "npm run build:web && npm run tauri:build --workspace @digitalbots/desktop"
+  }
+}

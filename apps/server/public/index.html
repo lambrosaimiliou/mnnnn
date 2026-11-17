@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5f7fa" />
+  <meta name="description" content="DigitalBots Management — private client, subscription and revenue operations." />
+  <title>DigitalBots Management</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <section id="connection-screen" class="connection-screen hidden">
+    <div class="connection-card">
+      <div class="brand-lockup"><span class="brand-mark">D<span>.</span></span><span><b>DigitalBots</b><small>Management</small></span></div>
+      <div class="connection-icon">↗</div>
+      <p class="eyebrow">DESKTOP CONNECTION</p>
+      <h1>Connect to your server</h1>
+      <p class="muted">Your clients, payments and settings live on your main server. Enter its HTTPS address to connect this desktop app.</p>
+      <form id="connect-server-form" class="stack-form">
+        <label for="server-url">Main server URL</label>
+        <input id="server-url" type="url" required placeholder="https://manage.yourdomain.com" autocomplete="url" />
+        <p class="field-hint">Use the public HTTPS address where DigitalBots is deployed. Localhost is only for local development.</p>
+        <button class="button button-primary button-wide" type="submit">Connect to DigitalBots <span>→</span></button>
+      </form>
+      <div id="connect-status" class="connection-status" role="status"></div>
+    </div>
+    <p class="connection-footnote">One workspace. One central server. Your data stays synchronized.</p>
+  </section>
+
+  <section id="auth-screen" class="auth-screen hidden">
+    <div class="auth-side-panel">
+      <div class="brand-lockup brand-lockup-light"><span class="brand-mark">D<span>.</span></span><span><b>DigitalBots</b><small>Management</small></span></div>
+      <div class="auth-side-copy">
+        <div class="auth-orbit orbit-one"></div><div class="auth-orbit orbit-two"></div>
+        <div class="auth-side-kicker"><span class="online-dot"></span> PRIVATE BUSINESS WORKSPACE</div>
+        <h1>Every client.<br><em>In control.</em></h1>
+        <p>One clear view of your customers, subscriptions and business performance.</p>
+        <div class="auth-side-footer"><span>CLIENT OPERATIONS</span><span>REVENUE TRACKING</span><span>ACCESS CONTROL</span></div>
+      </div>
+      <div class="auth-side-bottom"><span>© <span id="auth-year"></span> DigitalBots</span><span>PRIVATE BY DESIGN</span></div>
+    </div>
+    <div class="auth-main">
+      <div class="auth-topline"><span class="tiny-status"><i></i> Secure workspace</span><button id="auth-theme-toggle" class="icon-button" type="button" title="Switch theme">◐</button></div>
+      <div class="auth-form-wrap">
+        <div class="auth-mobile-brand brand-lockup"><span class="brand-mark">D<span>.</span></span><span><b>DigitalBots</b><small>Management</small></span></div>
+        <p id="auth-eyebrow" class="eyebrow">WELCOME BACK</p>
+        <h2 id="auth-title">Sign in to your workspace</h2>
+        <p id="auth-subtitle" class="muted">Enter your administrator credentials to continue.</p>
+        <form id="login-form" class="auth-form">
+          <div class="form-field"><label for="login-username">Username</label><input id="login-username" name="username" required autocomplete="username" value="digitalbots" placeholder="Your username" /></div>
+          <div class="form-field hidden" id="setup-key-wrap"><label for="setup-key">One-time server setup key</label><input id="setup-key" type="password" autocomplete="off" placeholder="Paste the key from the main server environment"><small>Use the INITIAL_SETUP_KEY value from the server configuration. This is different from your account password.</small></div>
+          <div class="form-field"><label for="login-password">Password</label><div class="password-wrap"><input id="login-password" name="password" type="password" required autocomplete="current-password" placeholder="Enter your password" /><button class="password-toggle" type="button" data-toggle-password="login-password" aria-label="Show password">Show</button></div></div>
+          <div id="login-message" class="form-message" role="alert"></div>
+          <button id="login-submit" class="button button-primary button-wide" type="submit">Sign in <span>→</span></button>
+        </form>
+        <div class="auth-security-note"><span class="security-shield">⌑</span><span><b>Protected workspace</b><small>New network sign-ins require owner approval.</small></span></div>
+      </div>
+      <div class="auth-bottomline"><span>DigitalBots Management</span><span>v1.0.0</span></div>
+    </div>
+  </section>
+
+  <section id="app-shell" class="app-shell hidden">
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand"><span class="brand-mark">D<span>.</span></span><span class="brand-name"><b>DigitalBots</b><small>MANAGEMENT</small></span><button id="sidebar-collapse" class="collapse-button" type="button" aria-label="Collapse sidebar">‹</button></div>
+      <div class="workspace-switch"><span class="workspace-avatar">D</span><span class="workspace-copy"><b>DigitalBots HQ</b><small>Private workspace</small></span><span class="chevron">⌄</span></div>
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-page="dashboard"><span class="nav-icon">◫</span><span>Overview</span></button>
+        <button class="nav-item" data-page="clients"><span class="nav-icon">♙</span><span>Clients</span><span class="nav-badge" id="nav-clients">0</span></button>
+        <button class="nav-item" data-page="subscriptions"><span class="nav-icon">◷</span><span>Subscriptions</span></button>
+        <button class="nav-item" data-page="payments"><span class="nav-icon">↗</span><span>Payments</span></button>
+        <div class="sidebar-label sidebar-label-spaced">INSIGHTS</div>
+        <button class="nav-item" data-page="discord"><span class="nav-icon">◎</span><span>Discord analytics</span></button>
+        <button class="nav-item" data-page="reports"><span class="nav-icon">▥</span><span>Reports</span></button>
+        <div class="sidebar-label sidebar-label-spaced">ADMINISTRATION</div>
+        <button class="nav-item" data-page="security"><span class="nav-icon">⌑</span><span>Security</span><span class="nav-badge nav-badge-alert" id="nav-pending">0</span></button>
+        <button class="nav-item" data-page="activity"><span class="nav-icon">≋</span><span>Activity log</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="nav-item" data-page="settings"><span class="nav-icon">⚙</span><span>Settings</span></button>
+        <div class="sidebar-user"><div class="user-avatar">D</div><div class="user-copy"><b id="sidebar-username">digitalbots</b><small>Administrator</small></div><button id="sidebar-logout" class="user-more" type="button" title="Sign out">↗</button></div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="topbar-left"><button id="mobile-menu" class="mobile-menu" type="button" aria-label="Open menu">☰</button><div class="breadcrumbs"><span>DigitalBots</span><i>/</i><b id="topbar-page">Overview</b></div></div>
+        <div class="topbar-right"><div class="server-state"><i></i><span>Server connected</span></div><span class="topbar-divider"></span><span id="current-date" class="current-date"></span><button id="theme-toggle" class="icon-button theme-button" type="button" title="Switch theme">◐</button><button id="topbar-user" class="topbar-user" type="button"><span class="user-avatar user-avatar-small">D</span><span id="topbar-username">digitalbots</span><span class="chevron">⌄</span></button></div>
+      </header>
+
+      <div class="page-wrap">
+        <section id="page-dashboard" class="page-section">
+          <div class="page-heading dashboard-heading"><div><p class="eyebrow">YOUR BUSINESS, AT A GLANCE</p><h1>Overview</h1><p class="muted">A clear picture of your client operations and performance.</p></div><div class="heading-actions"><button class="button button-secondary" data-open-payment>＋ Record payment</button><button class="button button-primary" data-open-client>＋ New client</button></div></div>
+          <div class="metric-grid" id="dashboard-metrics">
+            <article class="metric-card"><div class="metric-heading"><span>Total revenue</span><span class="metric-icon metric-icon-blue">↗</span></div><div class="metric-value" id="metric-revenue">€0.00</div><div class="metric-foot"><span class="metric-foot-neutral" id="metric-month">€0.00 this month</span><span class="metric-note">Recorded payments</span></div></article>
+            <article class="metric-card"><div class="metric-heading"><span>Total clients</span><span class="metric-icon metric-icon-violet">♙</span></div><div class="metric-value" id="metric-clients">0</div><div class="metric-foot"><span class="metric-foot-neutral" id="metric-new-clients">0 new this month</span><span class="metric-note">Client register</span></div></article>
+            <article class="metric-card"><div class="metric-heading"><span>Active subscriptions</span><span class="metric-icon metric-icon-green">◷</span></div><div class="metric-value" id="metric-active">0</div><div class="metric-foot"><span class="metric-foot-neutral" id="metric-expired">0 expired</span><span class="metric-note">Current access</span></div></article>
+            <article class="metric-card"><div class="metric-heading"><span>Outstanding</span><span class="metric-icon metric-icon-amber">◌</span></div><div class="metric-value" id="metric-outstanding">€0.00</div><div class="metric-foot"><span class="metric-foot-warning" id="metric-expiring">0 expiring soon</span><span class="metric-note">Pending + renewals</span></div></article>
+          </div>
+          <div class="dashboard-grid">
+            <section class="panel revenue-panel"><div class="panel-heading"><div><p class="eyebrow">FINANCIAL PERFORMANCE</p><h2>Revenue overview</h2><p class="muted">Recorded payments over the last six months.</p></div><span class="period-pill">Last 6 months <span>⌄</span></span></div><div id="revenue-chart" class="revenue-chart"><div class="chart-empty">Your revenue chart will appear as payments are recorded.</div></div></section>
+            <section class="panel subscription-panel"><div class="panel-heading"><div><p class="eyebrow">CLIENT MIX</p><h2>Subscriptions</h2><p class="muted">Current plan distribution.</p></div><button class="subtle-icon-button" data-go-page="subscriptions" type="button">↗</button></div><div id="plan-chart" class="plan-chart"><div class="chart-empty">No subscription data yet.</div></div><div class="plan-legend" id="plan-legend"></div></section>
+          </div>
+          <div class="dashboard-grid dashboard-lower-grid">
+            <section class="panel recent-clients-panel"><div class="panel-heading"><div><p class="eyebrow">CLIENT RELATIONSHIPS</p><h2>Recently added</h2><p class="muted">The latest records in your workspace.</p></div><button class="text-link" data-go-page="clients" type="button">View all clients <span>→</span></button></div><div id="dashboard-clients" class="table-container"><div class="table-empty">No clients yet. Add your first client to get started.</div></div></section>
+            <section class="panel recent-payments-panel"><div class="panel-heading"><div><p class="eyebrow">CASH FLOW</p><h2>Recent payments</h2><p class="muted">The latest payment activity.</p></div><button class="subtle-icon-button" data-go-page="payments" type="button">↗</button></div><div id="dashboard-payments" class="mini-list"><div class="table-empty">No payments recorded yet.</div></div></section>
+          </div>
+          <div class="dashboard-footnote"><span class="footnote-dot"></span><span>All figures are calculated from your central <b>digitalbotsclients</b> database.</span><span id="last-refresh">Updated just now</span></div>
+        </section>
+
+        <section id="page-clients" class="page-section hidden">
+          <div class="page-heading"><div><p class="eyebrow">CUSTOMER RELATIONSHIPS</p><h1>Clients</h1><p class="muted">Manage client details, access plans and subscription history.</p></div><div class="heading-actions"><button class="button button-primary" data-open-client>＋ Create client</button></div></div>
+          <section class="panel table-panel"><div class="table-toolbar"><div class="toolbar-title"><h2>All clients <span id="client-count-label" class="count-label">0</span></h2><p class="muted">Search and manage your client register.</p></div><div class="toolbar-controls"><div class="search-box"><span>⌕</span><input id="client-search" type="search" placeholder="Search name or Discord ID" aria-label="Search clients"></div><select id="client-plan-filter" class="filter-select" aria-label="Filter plan"><option value="">All plans</option><option>Basic</option><option>Premium</option><option>Business</option></select><select id="client-status-filter" class="filter-select" aria-label="Filter status"><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="EXPIRED">Expired</option></select></div></div><div id="clients-table" class="table-container"><div class="loading-row">Loading clients…</div></div><div class="table-pagination"><span id="client-pagination-label">Showing 0 clients</span><div><button id="client-prev" class="pagination-button" type="button" disabled>←</button><button id="client-next" class="pagination-button" type="button" disabled>→</button></div></div></section>
+        </section>
+
+        <section id="page-subscriptions" class="page-section hidden">
+          <div class="page-heading"><div><p class="eyebrow">ACCESS MANAGEMENT</p><h1>Subscriptions</h1><p class="muted">Monitor active access, upcoming renewals and expired plans.</p></div></div>
+          <div class="metric-grid metric-grid-three"><article class="metric-card"><div class="metric-heading"><span>Active</span><span class="metric-icon metric-icon-green">●</span></div><div class="metric-value" id="sub-active-count">0</div><div class="metric-note">Currently valid</div></article><article class="metric-card"><div class="metric-heading"><span>Expiring in 30 days</span><span class="metric-icon metric-icon-amber">◷</span></div><div class="metric-value" id="sub-expiring-count">0</div><div class="metric-note">Renewal opportunities</div></article><article class="metric-card"><div class="metric-heading"><span>Lifetime</span><span class="metric-icon metric-icon-blue">∞</span></div><div class="metric-value" id="sub-lifetime-count">0</div><div class="metric-note">No expiry date</div></article></div>
+          <section class="panel table-panel"><div class="panel-heading"><div><h2>Subscription register</h2><p class="muted">Full subscription history, newest first.</p></div><select id="subscription-filter" class="filter-select"><option value="">All subscriptions</option><option value="ACTIVE">Active</option><option value="EXPIRED">Expired</option><option value="LIFETIME">Lifetime</option></select></div><div id="subscriptions-table" class="table-container"><div class="loading-row">Loading subscriptions…</div></div></section>
+        </section>
+
+        <section id="page-payments" class="page-section hidden">
+          <div class="page-heading"><div><p class="eyebrow">FINANCIAL OPERATIONS</p><h1>Payments</h1><p class="muted">A reliable record of received, pending and refunded payments.</p></div><button class="button button-primary" data-open-payment>＋ Record payment</button></div>
+          <div class="metric-grid metric-grid-three"><article class="metric-card"><div class="metric-heading"><span>Received revenue</span><span class="metric-icon metric-icon-green">↗</span></div><div id="payments-received" class="metric-value">€0.00</div><div class="metric-note">Paid minus refunds</div></article><article class="metric-card"><div class="metric-heading"><span>Pending payments</span><span class="metric-icon metric-icon-amber">◌</span></div><div id="payments-pending" class="metric-value">€0.00</div><div class="metric-note">Not counted as revenue</div></article><article class="metric-card"><div class="metric-heading"><span>Transactions</span><span class="metric-icon metric-icon-blue">▤</span></div><div id="payments-count" class="metric-value">0</div><div class="metric-note">All recorded entries</div></article></div>
+          <section class="panel table-panel"><div class="panel-heading"><div><h2>Payment history</h2><p class="muted">Every payment remains linked to its client.</p></div></div><div id="payments-table" class="table-container"><div class="loading-row">Loading payments…</div></div></section>
+        </section>
+
+        <section id="page-discord" class="page-section hidden">
+          <div class="page-heading"><div><p class="eyebrow">COMMUNITY PERFORMANCE</p><h1>Discord analytics</h1><p class="muted">Membership metrics from your connected Discord server.</p></div><a class="button button-secondary" href="https://discord.gg/cwAcrz7zeH" target="_blank" rel="noopener">Open Discord <span>↗</span></a></div>
+          <div class="integration-banner"><div class="integration-avatar">◎</div><div class="integration-copy"><b>DigitalBots Discord community</b><span>Guild ID <code>1569256802179354646</code> · <span id="discord-connection-label">Checking connection…</span></span></div><div class="integration-state" id="discord-state"><i></i> Checking</div></div>
+          <div class="metric-grid"><article class="metric-card"><div class="metric-heading"><span>Total members</span><span class="metric-icon metric-icon-violet">♙</span></div><div class="metric-value" id="discord-total">—</div><div class="metric-note">Current server size</div></article><article class="metric-card"><div class="metric-heading"><span>Online members</span><span class="metric-icon metric-icon-green">●</span></div><div class="metric-value" id="discord-online">—</div><div class="metric-note">Presence-enabled members</div></article><article class="metric-card"><div class="metric-heading"><span>Offline members</span><span class="metric-icon metric-icon-amber">○</span></div><div class="metric-value" id="discord-offline">—</div><div class="metric-note">Not currently online</div></article><article class="metric-card"><div class="metric-heading"><span>Growth in 30 days</span><span class="metric-icon metric-icon-blue">↗</span></div><div class="metric-value" id="discord-growth">—</div><div class="metric-note">Requires snapshot history</div></article></div>
+          <div class="dashboard-grid"><section class="panel"><div class="panel-heading"><div><p class="eyebrow">INVITE ATTRIBUTION</p><h2>Top inviter</h2></div></div><div id="discord-top-inviter" class="inviter-card"><div class="empty-state">Connect the Discord bot to start tracking invite usage.</div></div></section><section class="panel"><div class="panel-heading"><div><p class="eyebrow">INTEGRATION</p><h2>Connection details</h2></div></div><div class="integration-details"><div><span>Guild</span><b>1569256802179354646</b></div><div><span>Invite</span><a href="https://discord.gg/cwAcrz7zeH" target="_blank" rel="noopener">discord.gg/cwAcrz7zeH ↗</a></div><div><span>Bot token</span><b>Stored on main server only</b></div></div></section></div>
+          <p id="discord-error" class="muted integration-hint">Live figures require the Discord bot token and privileged Gateway intents to be configured on the central server.</p>
+        </section>
+
+        <section id="page-security" class="page-section hidden">
+          <div class="page-heading"><div><p class="eyebrow">ACCOUNT PROTECTION</p><h1>Security</h1><p class="muted">Review network access requests, trusted addresses and login activity.</p></div><span class="security-level"><i></i> IP authorization enabled</span></div>
+          <div class="security-info"><span class="security-info-icon">⌑</span><div><b>New sign-ins are verified before access</b><p>When a valid login comes from a new network address, it appears here for approval. Approval allows future sign-ins from that IP; rejection blocks it.</p></div></div>
+          <section class="panel table-panel"><div class="panel-heading"><div><h2>Pending approval <span id="pending-count" class="count-label">0</span></h2><p class="muted">Correct credentials from an address that is not yet trusted.</p></div></div><div id="pending-table" class="table-container"><div class="table-empty">No pending login requests.</div></div></section>
+          <section class="panel table-panel"><div class="panel-heading"><div><h2>Trusted & blocked addresses</h2><p class="muted">Manage the networks permitted to access this workspace.</p></div></div><div id="trusted-table" class="table-container"><div class="table-empty">No trusted addresses are recorded.</div></div></section>
+          <section class="panel table-panel"><div class="panel-heading"><div><h2>Recent login history</h2><p class="muted">Successful, pending and rejected authentication attempts.</p></div></div><div id="login-history-table" class="table-container"><div class="table-empty">No login events yet.</div></div></section>
+        </section>
+
+        <section id="page-activity" class="page-section hidden">
+          <div class="page-heading"><div><p class="eyebrow">AUDIT TRAIL</p><h1>Activity log</h1><p class="muted">A chronological record of changes made in your workspace.</p></div></div>
+          <section class="panel activity-panel"><div class="panel-heading"><div><h2>Recent activity</h2><p class="muted">Latest administrative events.</p></div></div><div id="activity-list" class="activity-list"><div class="table-empty">No activity recorded yet.</div></div></section>
+        </section>
+
+        <section id="page-reports" class="page-section hidden">
+          <div class="page-heading"><div><p class="eyebrow">BUSINESS INTELLIGENCE</p><h1>Reports</h1><p class="muted">Export clean records for bookkeeping and business reviews.</p></div></div>
+          <div class="report-grid"><article class="panel report-card"><div class="report-icon report-icon-blue">♙</div><h2>Client register</h2><p class="muted">Client profiles with current plan, dates and amount received.</p><a class="button button-secondary" href="/api/reports/clients.csv" data-download-report>Export clients <span>↓</span></a></article><article class="panel report-card"><div class="report-icon report-icon-green">↗</div><h2>Payment history</h2><p class="muted">Individual transactions, currencies, dates and payment statuses.</p><a class="button button-secondary" href="/api/reports/payments.csv" data-download-report>Export payments <span>↓</span></a></article></div>
+          <div class="security-info report-note"><span class="security-info-icon">i</span><div><b>Exports use live database records</b><p>Pending payments are not counted as collected revenue. Refunded amounts are deducted from received revenue.</p></div></div>
+        </section>
+
+        <section id="page-settings" class="page-section hidden">
+          <div class="page-heading"><div><p class="eyebrow">WORKSPACE PREFERENCES</p><h1>Settings</h1><p class="muted">Configure appearance, account security, plans and integrations.</p></div></div>
+          <div class="settings-layout"><nav class="settings-nav"><button class="settings-tab active" data-settings-tab="appearance">◐ <span>Appearance</span></button><button class="settings-tab" data-settings-tab="account">♙ <span>Account</span></button><button class="settings-tab" data-settings-tab="plans">▤ <span>Plans & pricing</span></button><button class="settings-tab" data-settings-tab="connection">↗ <span>Server connection</span></button><button class="settings-tab" data-settings-tab="discord-settings">◎ <span>Discord</span></button><button class="settings-tab" data-settings-tab="data">▣ <span>Data & backups</span></button></nav>
+            <div class="settings-content">
+              <section class="settings-pane" id="settings-appearance"><div class="settings-pane-heading"><h2>Appearance</h2><p class="muted">Make DigitalBots feel right for your workspace.</p></div><div class="setting-row"><div><b>Color theme</b><small>Choose a light or dark interface.</small></div><div class="theme-options"><button class="theme-choice active" data-set-theme="light"><span class="theme-preview theme-preview-light"></span>Light</button><button class="theme-choice" data-set-theme="dark"><span class="theme-preview theme-preview-dark"></span>Dark</button></div></div><div class="setting-row"><div><b>Compact tables</b><small>Use tighter row spacing for dense data.</small></div><label class="switch"><input id="compact-toggle" type="checkbox"><span></span></label></div><button class="button button-primary" id="save-appearance">Save preferences</button></section>
+              <section class="settings-pane hidden" id="settings-account"><div class="settings-pane-heading"><h2>Account security</h2><p class="muted">Update your administrator password.</p></div><form id="password-form" class="settings-form"><div class="form-field"><label>Current password</label><input type="password" id="current-password" required autocomplete="current-password"></div><div class="form-field"><label>New password</label><input type="password" id="new-password" minlength="14" required autocomplete="new-password"><small>Use at least 14 characters.</small></div><div class="form-field"><label>Confirm new password</label><input type="password" id="confirm-password" minlength="14" required autocomplete="new-password"></div><button class="button button-primary" type="submit">Update password</button></form><div class="setting-note"><b>Session protection</b><p>Idle timeout is enforced by the server. Choose a duration from 5 to 10 hours in the security setting below.</p></div><div class="form-field"><label for="idle-timeout">Idle session timeout</label><select id="idle-timeout" class="filter-select"><option value="5">5 hours</option><option value="6">6 hours</option><option value="7">7 hours</option><option value="8">8 hours</option><option value="9">9 hours</option><option value="10">10 hours</option></select></div><button class="button button-primary" id="save-idle-timeout">Save timeout</button></section>
+              <section class="settings-pane hidden" id="settings-plans"><div class="settings-pane-heading"><h2>Plans & pricing</h2><p class="muted">Set the default price guidance for each subscription plan.</p></div><form id="plans-form" class="settings-form"><div class="form-grid"><div class="form-field"><label>Basic price</label><input id="basic-price" type="number" min="0" step="0.01"></div><div class="form-field"><label>Premium price</label><input id="premium-price" type="number" min="0" step="0.01"></div><div class="form-field"><label>Business price</label><input id="business-price" type="number" min="0" step="0.01"></div><div class="form-field"><label>Default currency</label><select id="settings-currency"><option>EUR</option><option>USD</option><option>GBP</option></select></div></div><p class="field-hint">Prices are suggested defaults only. Each subscription stores its own price and currency.</p><button class="button button-primary" type="submit">Save plan settings</button></form></section>
+              <section class="settings-pane hidden" id="settings-connection"><div class="settings-pane-heading"><h2>Server connection</h2><p class="muted">The desktop client connects to the hosted DigitalBots server.</p></div><div class="connection-detail-card"><div><span>Current API target</span><b id="settings-server-url">Current web origin</b></div><span id="settings-server-status" class="status-pill status-active">Connected</span></div><form id="server-form" class="settings-form"><div class="form-field"><label for="settings-server-input">Main server URL</label><input id="settings-server-input" type="url" placeholder="https://manage.yourdomain.com"></div><p class="field-hint">Changing this URL signs out of the current server and reconnects. Production servers must use HTTPS.</p><button class="button button-primary" type="submit">Save and reconnect</button></form><div class="setting-note"><b>Central data architecture</b><p>Client, subscription, payment and security records live on the main server. Do not put MySQL credentials in the desktop app.</p></div></section>
+              <section class="settings-pane hidden" id="settings-discord-settings"><div class="settings-pane-heading"><h2>Discord integration</h2><p class="muted">Integration credentials are managed on the central server.</p></div><div class="integration-details"><div><span>Guild ID</span><b>1569256802179354646</b></div><div><span>Invite URL</span><a href="https://discord.gg/cwAcrz7zeH" target="_blank" rel="noopener">discord.gg/cwAcrz7zeH ↗</a></div><div><span>Bot token</span><b>Server-side only</b></div><div><span>Connection</span><b id="settings-discord-status">Not configured</b></div></div><p class="field-hint">Add DISCORD_BOT_TOKEN and optional DISCORD_WEBHOOK_URL to the main server environment, then restart the service. Never enter the bot token in this browser.</p><button class="button button-secondary" id="test-discord">Check Discord connection</button></section>
+              <section class="settings-pane hidden" id="settings-data"><div class="settings-pane-heading"><h2>Data & backups</h2><p class="muted">Keep your business records portable and protected.</p></div><div class="setting-row"><div><b>Export client data</b><small>Download the client register as CSV.</small></div><a class="text-link" href="/api/reports/clients.csv" data-download-report>Download ↓</a></div><div class="setting-row"><div><b>Export payment data</b><small>Download the payment ledger as CSV.</small></div><a class="text-link" href="/api/reports/payments.csv" data-download-report>Download ↓</a></div><div class="setting-note"><b>Database backups</b><p>Use the database host's scheduled backup or the deployment backup procedure. The desktop app does not contain database credentials and cannot restore a server backup from the browser.</p></div></section>
+            </div>
+          </div>
+        </section>
+
+        <footer class="main-footer"><span>DigitalBots Management</span><span>Private client operations <i>·</i> <span id="footer-version">v1.0.0</span></span></footer>
+      </div>
+    </main>
+  </section>
+
+  <dialog id="client-dialog" class="app-dialog">
+    <form id="client-form" method="dialog">
+      <div class="dialog-header"><div><p class="eyebrow">CLIENT RECORD</p><h2 id="client-dialog-title">Create client</h2><p class="muted">Details are stored in your central workspace.</p></div><button class="dialog-close" type="button" data-close-dialog="client-dialog">×</button></div>
+      <input id="edit-client-id" type="hidden">
+      <div class="dialog-section-title">Personal information</div>
+      <div class="form-grid"><div class="form-field"><label for="client-discord-name">Discord username *</label><input id="client-discord-name" required maxlength="120" placeholder="username"></div><div class="form-field"><label for="client-discord-id">Discord ID *</label><input id="client-discord-id" required inputmode="numeric" pattern="[0-9]{5,25}" maxlength="25" placeholder="Discord user ID"></div><div class="form-field"><label for="client-irl-name">IRL name *</label><input id="client-irl-name" required maxlength="160" placeholder="Full name"></div><div class="form-field"><label for="client-invite">Discord server invite</label><input id="client-invite" type="url" placeholder="https://discord.gg/..." maxlength="500"></div></div>
+      <div class="dialog-section-title" id="subscription-section-title">Subscription</div><div id="subscription-fields"><div class="form-grid"><div class="form-field"><label for="client-plan">Plan *</label><select id="client-plan" required><option>Basic</option><option>Premium</option><option>Business</option></select></div><div class="form-field"><label for="client-duration">Duration *</label><select id="client-duration" required><option>1 Month</option><option>3 Months</option><option>6 Months</option><option>1 Year</option><option>Lifetime</option><option>Custom</option></select></div><div class="form-field"><label for="client-start-date">Start date *</label><input id="client-start-date" type="date" required></div><div class="form-field hidden" id="custom-end-field"><label for="client-custom-end">Custom expiration *</label><input id="client-custom-end" type="date"></div><div class="form-field"><label for="client-price">Subscription price</label><input id="client-price" type="number" min="0" step="0.01" value="0.00"></div><div class="form-field"><label for="client-currency">Currency</label><select id="client-currency"><option>EUR</option><option>USD</option><option>GBP</option></select></div></div>
+      <div class="form-field" id="initial-paid-field"><label for="client-amount-paid">Amount received now</label><input id="client-amount-paid" type="number" min="0" step="0.01" value="0.00"><small>Leave at zero when no payment has been received.</small></div>
+      <div class="form-field hidden" id="edit-subscription-toggle-row"><label class="checkbox-field"><input id="edit-subscription-toggle" type="checkbox"> <span>Create a new subscription record with these plan details</span></label><small>Leave unchecked to update personal information only.</small></div>
+      <div class="form-field"><label for="client-notes">Internal notes</label><textarea id="client-notes" rows="3" maxlength="4000" placeholder="Notes for your team…"></textarea></div>
+      <div class="dialog-footer"><button class="button button-secondary" type="button" data-close-dialog="client-dialog">Cancel</button><button class="button button-primary" id="client-save-button" type="submit">Save client</button></div><div id="client-form-message" class="form-message"></div>
+    </form>
+  </dialog>
+
+  <dialog id="payment-dialog" class="app-dialog app-dialog-small">
+    <form id="payment-form" method="dialog"><div class="dialog-header"><div><p class="eyebrow">FINANCIAL RECORD</p><h2>Record payment</h2><p class="muted">Add a payment to the client ledger.</p></div><button class="dialog-close" type="button" data-close-dialog="payment-dialog">×</button></div>
+      <div class="form-field"><label for="payment-client">Client *</label><select id="payment-client" required><option value="">Choose a client</option></select></div><div class="form-grid"><div class="form-field"><label for="payment-amount">Amount *</label><input id="payment-amount" type="number" min="0.01" step="0.01" required placeholder="0.00"></div><div class="form-field"><label for="payment-currency">Currency</label><select id="payment-currency"><option>EUR</option><option>USD</option><option>GBP</option></select></div><div class="form-field"><label for="payment-date">Payment date</label><input id="payment-date" type="date" required></div><div class="form-field"><label for="payment-method">Method</label><select id="payment-method"><option>Other</option><option>PayPal</option><option>Bank transfer</option><option>Card</option><option>Cash</option><option>Crypto</option></select></div><div class="form-field"><label for="payment-status">Status</label><select id="payment-status"><option value="PAID">Paid</option><option value="PENDING">Pending</option><option value="REFUNDED">Refunded</option></select></div><div class="form-field"><label for="payment-description">Description</label><input id="payment-description" maxlength="500" placeholder="Optional details"></div></div>
+      <div class="dialog-footer"><button class="button button-secondary" type="button" data-close-dialog="payment-dialog">Cancel</button><button class="button button-primary" type="submit">Save payment</button></div><div id="payment-form-message" class="form-message"></div>
+    </form>
+  </dialog>
+
+  <dialog id="subscription-dialog" class="app-dialog app-dialog-small">
+    <form id="subscription-form" method="dialog"><div class="dialog-header"><div><p class="eyebrow">SUBSCRIPTION HISTORY</p><h2>Extend subscription</h2><p class="muted" id="subscription-dialog-client">Create the next subscription period.</p></div><button class="dialog-close" type="button" data-close-dialog="subscription-dialog">×</button></div>
+      <input id="extend-subscription-id" type="hidden"><div class="form-grid"><div class="form-field"><label for="extend-plan">Plan</label><select id="extend-plan"><option>Basic</option><option>Premium</option><option>Business</option></select></div><div class="form-field"><label for="extend-duration">Duration</label><select id="extend-duration"><option>1 Month</option><option>3 Months</option><option>6 Months</option><option>1 Year</option><option>Lifetime</option><option>Custom</option></select></div><div class="form-field"><label for="extend-start">New period starts</label><input id="extend-start" type="date" required></div><div class="form-field hidden" id="extend-custom-field"><label for="extend-custom-end">Custom end date</label><input id="extend-custom-end" type="date"></div><div class="form-field"><label for="extend-price">Subscription price</label><input id="extend-price" type="number" min="0" step="0.01" value="0.00"></div><div class="form-field"><label for="extend-currency">Currency</label><select id="extend-currency"><option>EUR</option><option>USD</option><option>GBP</option></select></div></div>
+      <div class="dialog-footer"><button class="button button-secondary" type="button" data-close-dialog="subscription-dialog">Cancel</button><button class="button button-primary" type="submit">Save extension</button></div><div id="subscription-form-message" class="form-message"></div>
+    </form>
+  </dialog>
+  <dialog id="detail-dialog" class="app-dialog app-dialog-small"><div id="detail-content"></div><div class="dialog-footer"><button class="button button-secondary" type="button" data-close-dialog="detail-dialog">Close</button></div></dialog>
+</body>
+</html>
